@@ -1,0 +1,37 @@
+name: Windows build
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install -r requirements.txt "pyinstaller==6.22.3"
+      - name: Check imports and syntax
+        shell: pwsh
+        run: |
+          python -c "import av, faster_whisper, ctranslate2; assert av.__version__ == '18.1.0'"
+          python -m py_compile LocalAITranscriber.pyw converter.py
+      - name: Build CPU-oriented Windows ZIP
+        shell: pwsh
+        run: |
+          python -m PyInstaller --noconfirm --clean --onedir --windowed --name LocalAITranscriber --collect-all faster_whisper --collect-all ctranslate2 LocalAITranscriber.pyw
+          Copy-Item docs\RELEASE-NOTES.txt dist\LocalAITranscriber\READ-ME-FIRST.txt
+          Compress-Archive -Path dist\LocalAITranscriber -DestinationPath LocalAITranscriber-Windows-CPU.zip -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LocalAITranscriber-Windows-CPU
+          path: LocalAITranscriber-Windows-CPU.zip
+          if-no-files-found: error
