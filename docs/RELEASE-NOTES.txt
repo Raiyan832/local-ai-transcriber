@@ -1,0 +1,12 @@
+LOCAL AI TRANSCRIBER - UNSIGNED WINDOWS ZIP
+
+1. Extract the entire ZIP.
+2. Run LocalAITranscriber.exe inside the LocalAITranscriber folder.
+3. Keep the _internal folder next to the EXE.
+4. Use CPU for initial validation. Whisper models download on first use.
+
+This build does NOT guarantee CUDA GPU acceleration and does NOT bundle model
+weights or the companion FFmpeg-based converter. For NVIDIA GPU support, use
+the source installation procedure in the GitHub README.
+
+https://github.com/Raiyan832/local-ai-transcriber
